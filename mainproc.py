@@ -41,4 +41,8 @@ def main() -> None:
     main_loop(device.path, URL)
 
 
-main()
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception:
+        logger.exception("Unhandled exception")

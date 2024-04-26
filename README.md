@@ -2,6 +2,16 @@
 
 System service to control access to the Laboratory door.
 
+```bash
+sudo apt install supervisor -y
+sudo $(which python) -m venv /opt/rfid-reader/env
+sudo cp usb-reader.conf /etc/supervisor/conf.d/
+sudo cp -r door_access mainproc.py /opt/rfid-reader
+sudo supervisorctl reread
+sudo supervisorctl update
+sudo supervisorctl status
+```
+
 First, you need to identify the device. For example you have a USB RFID reader.
 It's likely that your RFID reader is functioning as a keyboard emulation device (HID keyboard).
 
