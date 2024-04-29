@@ -1,6 +1,7 @@
 import logging
 import logging.handlers
 from typing import List
+import sys
 
 FORMAT = "[%(asctime)s | %(module)s | %(levelname)s | %(lineno)d]: %(message)s"
 DATETIME_FMT = "%Y-%m-%dT%H:%M:%S%z"
@@ -35,7 +36,7 @@ def logging_config(
         logging.getLogger("pkg_name").setLevel("LEVEL")
         logging.getLogger("pkg_name").propagate = False
     """
-    stream_handler = logging.StreamHandler()
+    stream_handler = logging.StreamHandler(stream=sys.stdout)
     logging.basicConfig(
         level=logger_level,
         format=logger_fmt,
