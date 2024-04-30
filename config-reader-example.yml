@@ -4,7 +4,7 @@
 
 global:
   log_level: "INFO"
-  url: "http://example.com:8000/api/v0/tags/verify_tag/"
+  url: "http://127.0.0.1:8000/api/v0/tags/verify_tag/"
 
 readers:
   - name: "Sycreader RFID Technology Co., Ltd SYC ID&IC USB Reader"

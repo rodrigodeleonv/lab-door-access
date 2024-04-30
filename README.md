@@ -1,4 +1,4 @@
-# lab-door-access
+# Laboratory access door system
 
 System service to control access to the Laboratory door.
 
@@ -9,6 +9,9 @@ sudo curl -L https://raw.githubusercontent.com/rodrigodeleonv/lab-door-access/ma
 ```
 
 ## Development
+
+- [Poetry publish - One time setup](https://stackoverflow.com/a/72524326)
+- [How to publish with Poetry](https://towardsdatascience.com/packages-part-2-how-to-publish-test-your-package-on-pypi-with-poetry-9fc7295df1a5)
 
 ```bash
 sudo apt install supervisor -y
@@ -29,7 +32,6 @@ sudo rm /opt/rfid-reader/app-error.log /opt/rfid-reader/app.log
 sudo rm /etc/supervisor/conf.d/usb-reader.conf
 
 # Poetry
-[Publish - One time setup](https://stackoverflow.com/a/72524326)
 
 # test PyPi
 poetry config repositories.test-pypi https://test.pypi.org/legacy/
