@@ -23,7 +23,9 @@ def handle_key_press(data: InputEvent) -> str:
     return str(digit)
 
 
-def send_post_request(session: requests.Session, url: str, tag_id: str) -> dict:
+def send_post_request(
+    session: requests.Session, url: str, tag_id: str, timeout: int = 5
+) -> dict:
     """Sends a POST request to the URL with the tag ID.
 
     Args:
@@ -37,7 +39,7 @@ def send_post_request(session: requests.Session, url: str, tag_id: str) -> dict:
     body = {"tag_id": tag_id}
     data = {"status_code": None, "response": None}
     try:
-        response = session.post(url, json=body)
+        response = session.post(url, json=body, timeout=timeout)
     except requests.exceptions.RequestException:
         logger.exception("Failed to send POST request")
         return
