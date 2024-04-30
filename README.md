@@ -2,52 +2,82 @@
 
 System service to control access to the Laboratory door.
 
+Use supervisor for daemonize and it's resilent to usb disconnections.
+
+- You need to configure: `/opt/rfid/config-reader.yml`
+- Logs: `tail -f /opt/rfid/app.log`
+- Control service with: `sudo supervisorctl status` | `sudo supervisorctl restart rfid-usb-reader`
+
 ## Install
+
+Simple installation script.
 
 ```bash
 sudo curl -L https://raw.githubusercontent.com/rodrigodeleonv/lab-door-access/main/installer.sh | bash
 ```
 
+* This application requires supervisor.
+
 ## Development
+
+### Configure Poetry
 
 - [Poetry publish - One time setup](https://stackoverflow.com/a/72524326)
 - [How to publish with Poetry](https://towardsdatascience.com/packages-part-2-how-to-publish-test-your-package-on-pypi-with-poetry-9fc7295df1a5)
 
 ```bash
-sudo apt install supervisor -y
+# Poetry
+#
+# test PyPi
+poetry config repositories.test-pypi https://test.pypi.org/legacy/
+poetry config pypi-token.test-pypi  pypi-YYYYYYYY
+poetry publish --build -r test-pypi
+#
+# production PyPi
+poetry config pypi-token.pypi pypi-XXXXXXXX
+poetry publish --build
+# poetry build
+rm -rf dist/*
+```
+
+### Debug
+
+```bash
+
 sudo $(which python) -m venv /opt/rfid-reader/env
 sudo cp requirements-prod.txt /opt/rfid-reader/requirements.txt
 sudo cp config-reader.yml /opt/rfid-reader/
 # sudo source env/bin/activate
 # sudo pip install -r requirements.txt
+
+# How to install dependencies using test-pypi
+sudo /opt/rfid-reader/env/bin/pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple lab-door-access
+
+# Supervisor
+sudo apt install supervisor -y
 sudo cp usb-reader.conf /etc/supervisor/conf.d/
-sudo cp -r door_access mainproc.py /opt/rfid-reader
 sudo supervisorctl reread
 sudo supervisorctl update
+sudo supervisorctl restart rfid-usb-reader
 sudo supervisorctl status
 
 # Clean
-sudo supervisorctl restart rfid-usb-reader
-sudo rm /opt/rfid-reader/app-error.log /opt/rfid-reader/app.log
 sudo rm /etc/supervisor/conf.d/usb-reader.conf
-
-# Poetry
-
-# test PyPi
-poetry config repositories.test-pypi https://test.pypi.org/legacy/
-poetry config pypi-token.test-pypi  pypi-YYYYYYYY
-poetry publish --build -r test-pypi
-
-# production PyPi
-poetry config pypi-token.pypi pypi-XXXXXXXX
-poetry publish --build
+sudo supervisorctl reread
+sudo supervisorctl update
+#
+sudo apt remove supervisor
 ```
+
+## USB RFID Redears
 
 First, you need to identify the device. For example you have a USB RFID reader.
 It's likely that your RFID reader is functioning as a keyboard emulation device (HID keyboard).
 
 ```bash
-# Use one of the following commands
+# Use one of the following commands to find device
+
+# 1
 $ ls -lh /dev/input/by-id/
 total 0
 lrwxrwxrwx 1 root root 9 Mar 11 00:03 usb-Dell_Dell_USB_Keyboard-event-kbd -> ../event5
@@ -59,7 +89,7 @@ lrwxrwxrwx 1 root root 9 Mar 11 00:03 usb-Microsoft_Microsoft®_Nano_Transceiver
 lrwxrwxrwx 1 root root 9 Mar 11 00:03 usb-Microsoft_Microsoft®_Nano_Transceiver_v1.0-if02-event-kbd -> ../event3
 lrwxrwxrwx 1 root root 9 Apr  8 13:26 usb-Sycreader_RFID_Technology_Co.__Ltd_SYC_ID_IC_USB_Reader_08FF20140315-event-kbd -> ../event8  # <-- This is the Device
 
-# You need python evdev
+# 2: You need python evdev
 $ python -m evdev.evtest
 ID  Device               Name                                Phys                                Uniq
 ---------------------------------------------------------------------------------------------------------------------------------

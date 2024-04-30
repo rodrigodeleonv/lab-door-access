@@ -70,7 +70,7 @@ def entrypoint() -> None:
 
     while True:
         break_loop = True
-        reader = get_reader(DEV_NAME)
+        reader = get_reader(DEV_NAME, retry=10)
         try:
             main_loop(reader, URL)
         except OSError as e:

@@ -34,6 +34,7 @@ sudo curl -o /etc/supervisor/conf.d/usb-reader.conf \
 
 sudo supervisorctl reread
 sudo supervisorctl update
+sudo supervisorctl restart rfid-usb-reader
 
 echo "Done. You need to configure $install_dir/config-reader.yml before service can start."
 echo -e "Then to start the service use: \e[1;32msudo supervisorctl restart rfid-usb-reader\e[0m"
