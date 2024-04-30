@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "lab-door-access"
-version = "0.1.0"
+version = "0.0.1"
 description = "System app to control the door access"
 authors = ["R. D."]
 license = "Apache License Version 2.0"
 readme = "README.md"
-packages = [{include = "lab_door_access"}]
+packages = [{include = "door_access"}]
 
 [tool.poetry.dependencies]
 python = "^3.10, ^3.11"

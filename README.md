@@ -2,14 +2,43 @@
 
 System service to control access to the Laboratory door.
 
+## Install
+
+```bash
+sudo curl -L https://raw.githubusercontent.com/rodrigodeleonv/lab-door-access/main/installer.sh | bash
+```
+
+## Development
+
 ```bash
 sudo apt install supervisor -y
 sudo $(which python) -m venv /opt/rfid-reader/env
+sudo cp requirements-prod.txt /opt/rfid-reader/requirements.txt
+sudo cp config-reader.yml /opt/rfid-reader/
+# sudo source env/bin/activate
+# sudo pip install -r requirements.txt
 sudo cp usb-reader.conf /etc/supervisor/conf.d/
 sudo cp -r door_access mainproc.py /opt/rfid-reader
 sudo supervisorctl reread
 sudo supervisorctl update
 sudo supervisorctl status
+
+# Clean
+sudo supervisorctl restart rfid-usb-reader
+sudo rm /opt/rfid-reader/app-error.log /opt/rfid-reader/app.log
+sudo rm /etc/supervisor/conf.d/usb-reader.conf
+
+# Poetry
+[Publish - One time setup](https://stackoverflow.com/a/72524326)
+
+# test PyPi
+poetry config repositories.test-pypi https://test.pypi.org/legacy/
+poetry config pypi-token.test-pypi  pypi-YYYYYYYY
+poetry publish --build -r test-pypi
+
+# production PyPi
+poetry config pypi-token.pypi pypi-XXXXXXXX
+poetry publish --build
 ```
 
 First, you need to identify the device. For example you have a USB RFID reader.
