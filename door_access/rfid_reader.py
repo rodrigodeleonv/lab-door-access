@@ -53,36 +53,34 @@ def send_post_request(
     return data
 
 
-def main_loop(device_path: str, url: str):
+def main_loop(reader: InputDevice, url: str):
+    """Main loop of the RFID reader.
+
+    Args:
+        reader: InputDevice object representing the RFID reader.
+        url: The URL to send the POST request.
+    """
     rfid_tag = ""
     session = requests.Session()
-    reader = InputDevice(device_path)
     logger.info(f"Listening for RFID scans on device: {reader.path}")
 
-    try:
-        # event: KeyEvent
-        for event in reader.read_loop():
-            if event.type != ecodes.EV_KEY:
-                # logger.debug(f"Skipping non-key event: {event}")
-                continue
+    # event: KeyEvent
+    for event in reader.read_loop():
+        if event.type != ecodes.EV_KEY:
+            # logger.debug(f"Skipping non-key event: {event}")
+            continue
 
-            data: InputEvent = categorize(event)
+        data: InputEvent = categorize(event)
 
-            if data.keystate != 1:
-                # logger.debug(f"Skipping non-press event: {data}")
-                continue
+        if data.keystate != 1:
+            # logger.debug(f"Skipping non-press event: {data}")
+            continue
 
-            if 2 <= data.scancode <= 11:
-                rfid_tag += handle_key_press(data)
-            elif data.scancode == 28:
-                logger.info(f"RFID Tag ID: {rfid_tag}")
-                logger.info("Sending POST request")
-                response_data = send_post_request(session, url, rfid_tag)
-                logger.info(f"Response: {response_data}")
-                rfid_tag = ""
-    except KeyboardInterrupt:
-        logger.info("RFID service stopped")
-    except Exception:
-        logger.exception("An exception occurred and program will closed")
-    finally:
-        reader.close()
+        if 2 <= data.scancode <= 11:
+            rfid_tag += handle_key_press(data)
+        elif data.scancode == 28:
+            logger.info(f"RFID Tag ID: {rfid_tag}")
+            logger.info("Sending POST request")
+            response_data = send_post_request(session, url, rfid_tag)
+            logger.info(f"Response: {response_data}")
+            rfid_tag = ""
