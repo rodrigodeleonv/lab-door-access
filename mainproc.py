@@ -59,6 +59,8 @@ def entrypoint() -> None:
     config = get_config()
     DEV_NAME = config["readers"][0]["name"]
     URL = config["global"]["url"]
+    API_TOKEN = config["api"]["token"]
+    API_AUTH_SCHEME = config["api"]["auth_scheme"]
     LOG_LEVEL = config["global"]["log_level"]
 
     logging_config(LOG_LEVEL)
@@ -67,12 +69,13 @@ def entrypoint() -> None:
     logger.info(f"Log level: {LOG_LEVEL}")
     logger.info(f"RFID Device name: {DEV_NAME}")
     logger.info(f"Server URL: {URL}")
+    logger.info(f"API Auth Scheme: {API_AUTH_SCHEME}")
 
     while True:
         break_loop = True
         reader = get_reader(DEV_NAME, retry=10)
         try:
-            main_loop(reader, URL)
+            main_loop(reader, URL, API_TOKEN, API_AUTH_SCHEME)
         except OSError as e:
             if e.errno == 19:
                 logger.exception("Device not found. Device was disconnected?")
