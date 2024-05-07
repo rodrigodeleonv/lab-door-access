@@ -1,22 +1,23 @@
 # Laboratory access door system
 
-System service to control access to the Laboratory door.
-
-Use supervisor for daemonize and it's resilent to usb disconnections.
-
-- You need to configure: `/opt/rfid/config-reader.yml`
-- Logs: `tail -f /opt/rfid/app.log`
-- Control service with: `sudo supervisorctl status` | `sudo supervisorctl restart rfid-usb-reader`
+System service to control access to the Laboratory door. Use supervisor for daemonize and it's resilent to usb disconnections.
 
 ## Install
 
 Simple installation script.
 
 ```bash
-sudo curl -L https://raw.githubusercontent.com/rodrigodeleonv/lab-door-access/main/installer.sh | bash
+sudo curl -fsSL https://raw.githubusercontent.com/rodrigodeleonv/lab-door-access/main/installer.sh | bash
 ```
 
-* This application requires supervisor.
+1. Install the service
+1. You need to configure: `/opt/rfid/config-reader.yml`
+1. Restart the service: `sudo supervisorctl restart rfid-usb-reader`
+
+Optional
+
+1. Logs: `tail -f /opt/rfid/app.log`
+1. Verify service: `sudo supervisorctl status`
 
 ## Development
 
