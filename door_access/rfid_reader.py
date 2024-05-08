@@ -28,6 +28,7 @@ def send_post_request(
     url: str,
     tag_id: str,
     timeout: int = 5,
+    ssl_verify: bool = False,
 ) -> dict:
     """Sends a POST request to the URL with the tag ID.
 
@@ -35,6 +36,8 @@ def send_post_request(
         session: The requests.Session object.
         url: The URL to send the POST request.
         tag_id: The tag ID to send in the request body.
+        ssl_verify: Whether to verify the SSL certificate.
+            False allows to use self cert in local/internal network.
 
     Returns:
         A dictionary containing the` response data` and `status code`.
@@ -43,7 +46,7 @@ def send_post_request(
     body = {"tag_id": tag_id}
     data = {"status_code": None, "response": None}
     try:
-        response = session.post(url, json=body, timeout=timeout)
+        response = session.post(url, json=body, timeout=timeout, verify=ssl_verify)
     except requests.exceptions.RequestException:
         logger.exception("Failed to send POST request")
         return
