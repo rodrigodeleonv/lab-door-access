@@ -4,9 +4,6 @@ System service to control access to the Laboratory door. Use supervisor for daem
 
 Web interface: <https://github.com/rodrigodeleonv/door-access-mgm>
 
-
-# TODO: PACKAGE THIS RELEASE
-
 ## Install
 
 Simple installation script.
