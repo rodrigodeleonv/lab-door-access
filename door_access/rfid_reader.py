@@ -24,7 +24,11 @@ def handle_key_press(data: InputEvent) -> str:
 
 
 def send_post_request(
-    session: requests.Session, url: str, tag_id: str, timeout: int = 5
+    session: requests.Session,
+    url: str,
+    tag_id: str,
+    timeout: int = 5,
+    ssl_verify: bool = False,
 ) -> dict:
     """Sends a POST request to the URL with the tag ID.
 
@@ -32,14 +36,17 @@ def send_post_request(
         session: The requests.Session object.
         url: The URL to send the POST request.
         tag_id: The tag ID to send in the request body.
+        ssl_verify: Whether to verify the SSL certificate.
+            False allows to use self cert in local/internal network.
 
     Returns:
         A dictionary containing the` response data` and `status code`.
     """
+
     body = {"tag_id": tag_id}
     data = {"status_code": None, "response": None}
     try:
-        response = session.post(url, json=body, timeout=timeout)
+        response = session.post(url, json=body, timeout=timeout, verify=ssl_verify)
     except requests.exceptions.RequestException:
         logger.exception("Failed to send POST request")
         return
@@ -53,15 +60,20 @@ def send_post_request(
     return data
 
 
-def main_loop(reader: InputDevice, url: str):
+def main_loop(reader: InputDevice, url: str, api_token: str, api_auth_scheme: str):
     """Main loop of the RFID reader.
 
     Args:
         reader: InputDevice object representing the RFID reader.
         url: The URL to send the POST request.
+        api_token: The API token to send in the request headers.
+        api_auth_scheme: The API authentication scheme to send in the request headers.
+            example: Token (Basic, Bearer not supported)
     """
     rfid_tag = ""
+    headers = {"Authorization": f"{api_auth_scheme} {api_token}"}
     session = requests.Session()
+    session.headers.update(headers)
     logger.info(f"Listening for RFID scans on device: {reader.path}")
 
     # event: KeyEvent

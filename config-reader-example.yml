@@ -4,7 +4,11 @@
 
 global:
   log_level: "INFO"
-  url: "http://127.0.0.1:8000/api/v0/tags/verify_tag/"
+  url: "https://127.0.0.1/api/v0/tags/verify_tag/"
+
+api:
+  auth_scheme: "Token"
+  token: "Add-your-API-Token"
 
 readers:
   - name: "Sycreader RFID Technology Co., Ltd SYC ID&IC USB Reader"
